@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import UserForm from './form';
+import UserForm from './form.jsx';
 import { formatText } from './utils/formatText.js';
 
 function App() {

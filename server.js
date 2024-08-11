@@ -3,6 +3,9 @@ import { PrismaNeon } from '@prisma/adapter-neon';
 import { PrismaClient } from '@prisma/client';
 import dotenv from 'dotenv';
 import ws from 'ws';
+import express from 'express';
+import cors from 'cors';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 dotenv.config();
 neonConfig.webSocketConstructor = ws;
@@ -13,13 +16,9 @@ const adapter = new PrismaNeon(pool);
 const prisma = new PrismaClient({ adapter });
 
 const PORT = 8000;
-const express = require('express');
-const cors = require('cors');
 const app = express();
 app.use(cors());
 app.use(express.json());
-
-const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 const getAI = new GoogleGenerativeAI(process.env.GOOGLE_GEN_AI_KEY);
 
@@ -38,6 +37,17 @@ app.post('/gemini', async (req, res) => {
     const response = await result.response;
     const text = response.text();
     res.send(text);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Something went wrong! Please try again later');
+    return error;
+  }
+});
+
+app.post('/prisma', async (req, res) => {
+  try {
+    const result = await prisma.$executeRaw`SELECT * FROM "User" WHERE name = ${req.body.name}`;
+    res.send(result);
   } catch (error) {
     console.error(error);
     res.status(500).send('Something went wrong! Please try again later');
