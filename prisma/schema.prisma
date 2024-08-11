@@ -15,7 +15,7 @@ datasource db {
 }
 
 model User {
-  id      Int      @id @default(autoincrement())
+  id      String      @id @default(uuid())
   email   String   @unique
   fullName    String
   postalCode String
@@ -23,8 +23,8 @@ model User {
 }
 
 model Chat {
-  id      Int      @id @default(autoincrement())
-  userId Int       @unique
+  id      String      @id @default(uuid())
+  userId String       @unique
   user   User   @relation(fields: [userId], references: [id])
   location String
   score Int
@@ -34,7 +34,7 @@ model Chat {
 
 model Message {
   id      Int      @id @default(autoincrement())
-  chatId Int    @unique
+  chatId String
   chat Chat @relation(fields: [chatId], references: [id])
   content String
   sender String
