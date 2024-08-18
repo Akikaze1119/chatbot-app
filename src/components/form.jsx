@@ -5,7 +5,7 @@ export default function UserForm({ getResponse, onShowForm }) {
     name: 'Jane Doe',
     email: 'test@test.com',
     phone: '1234567890',
-    postcode: 'V1V 1V1',
+    postalCode: 'V1V1V1',
   });
 
   const handleUserInfoChange = (e) => {
@@ -16,9 +16,26 @@ export default function UserForm({ getResponse, onShowForm }) {
     }));
   };
 
-  const handleSubmitUserInfo = (e) => {
+  const createUser = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userInfo),
+      });
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleSubmitUserInfo = async (e) => {
     e.preventDefault();
-    let prompt = `I'm sending my info. Talk based on my info. When I ask you about location, you have to answer based on my postal code. User info: ${userInfo.name}, ${userInfo.email}, ${userInfo.phone}, ${userInfo.postcode}`;
+    await createUser();
+    let prompt = `I'm sending my info. Talk based on my info. When I ask you about location, you have to answer based on my postal code. User info: ${userInfo.name}, ${userInfo.email}, ${userInfo.phone}, ${userInfo.postalCode}`;
     getResponse(prompt, []);
     onShowForm(false);
   };
@@ -56,11 +73,11 @@ export default function UserForm({ getResponse, onShowForm }) {
         />
       </div>
       <div>
-        <label>Postcode: </label>
+        <label>Postal code: </label>
         <input
           type='text'
-          name='postcode'
-          value={userInfo.postcode}
+          name='postalCode'
+          value={userInfo.postalCode}
           onChange={handleUserInfoChange}
           required
         />
