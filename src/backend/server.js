@@ -6,6 +6,7 @@ import ws from 'ws';
 import express from 'express';
 import cors from 'cors';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import router_users from './routers/router_users.js';
 
 dotenv.config();
 neonConfig.webSocketConstructor = ws;
@@ -17,17 +18,17 @@ const prisma = new PrismaClient({ adapter });
 
 const PORT = 8000;
 const app = express();
+
 app.use(cors());
 app.use(express.json());
+app.use('/api/users', router_users);
 
-const getAI = new GoogleGenerativeAI(process.env.GOOGLE_GEN_AI_KEY);
+const googleGenAIKey = process.env.GOOGLE_GEN_AI_KEY || 'default-key';
+const getAI = new GoogleGenerativeAI(googleGenAIKey);
 
 app.post('/gemini', async (req, res) => {
   try {
-    console.log('history:', req.body.history);
-    console.log('message:', req.body.message);
     const model = getAI.getGenerativeModel({ model: 'gemini-pro' });
-    console.log('model:', model);
     const chat = model.startChat({
       history: req.body.history,
     });
@@ -37,17 +38,6 @@ app.post('/gemini', async (req, res) => {
     const response = await result.response;
     const text = response.text();
     res.send(text);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Something went wrong! Please try again later');
-    return error;
-  }
-});
-
-app.post('/prisma', async (req, res) => {
-  try {
-    const result = await prisma.$executeRaw`SELECT * FROM "User" WHERE name = ${req.body.name}`;
-    res.send(result);
   } catch (error) {
     console.error(error);
     res.status(500).send('Something went wrong! Please try again later');

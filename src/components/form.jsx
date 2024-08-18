@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 export default function UserForm({ getResponse, onShowForm }) {
+  const [error, setError] = useState(null);
   const [userInfo, setUserInfo] = useState({
     name: 'Jane Doe',
     email: 'test@test.com',
@@ -26,18 +27,30 @@ export default function UserForm({ getResponse, onShowForm }) {
         body: JSON.stringify(userInfo),
       });
       const data = await response.json();
-      console.log(data);
+      if (response.status !== 200) throw new Error(data);
+      return data;
     } catch (error) {
-      console.error(error);
+      return { error: error.message };
     }
   };
 
   const handleSubmitUserInfo = async (e) => {
     e.preventDefault();
-    await createUser();
-    let prompt = `I'm sending my info. Talk based on my info. When I ask you about location, you have to answer based on my postal code. User info: ${userInfo.name}, ${userInfo.email}, ${userInfo.phone}, ${userInfo.postalCode}`;
-    getResponse(prompt, []);
-    onShowForm(false);
+    try {
+      const result = await createUser();
+      if (result.error) {
+        setError(result.error);
+      } else {
+        let prompt = `I'm sending my info. Talk based on my info. When I ask you about location, you have to answer based on my postal code. User info: ${userInfo.name}, ${userInfo.email}, ${userInfo.phone}, ${userInfo.postalCode}`;
+        getResponse(prompt, []);
+        setError(null);
+        setUserInfo(null);
+        onShowForm(false);
+      }
+    } catch (error) {
+      console.error(error);
+      setError('Something went wrong! Please try again later');
+    }
   };
 
   return (
@@ -82,6 +95,7 @@ export default function UserForm({ getResponse, onShowForm }) {
           required
         />
       </div>
+      {error && <p className='text-red-600'>{error}</p>}
       <button type='submit'>Submit</button>
     </form>
   );
