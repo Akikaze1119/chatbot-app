@@ -3,22 +3,23 @@ erDiagram
     USER ||--o{ CHAT : userId
     USER {
       Int id
-      string fullName
+      string name
       string email
-      string postalCode
+      string phone
+      string postal_code
     }
     CHAT {
       Int id
       Int userId
       string location
       Int score
-      string time_stamp
+      timestamp time_stamp
     }
     CHAT ||--|| MESSAGE : chatId
     MESSAGE {
       Int id
       string content
       string sender
-      string time_stamp
+      timestamp time_stamp
     }
 ```
