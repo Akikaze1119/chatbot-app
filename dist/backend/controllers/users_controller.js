@@ -1,4 +1,5 @@
 import User from '../models/user.js';
+import { ExistingUserError } from '../errors/errors.js';
 async function createUser(req, res) {
     const { name, email, phone, postalCode } = req.body;
     try {
@@ -6,7 +7,7 @@ async function createUser(req, res) {
         res.json(user);
     }
     catch (error) {
-        if (error?.message === 'User already exists') {
+        if (error instanceof ExistingUserError) {
             res.status(400).json(error?.message);
         }
         else {

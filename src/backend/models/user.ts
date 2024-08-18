@@ -1,5 +1,6 @@
 import { IUser } from '../../types/user';
 import UserServices from '../services/user_services.js';
+import { ExistingUserError } from '../errors/errors.js';
 
 class User {
   id: number;
@@ -18,7 +19,7 @@ class User {
 
   static async save({ name, email, phone, postalCode }: Omit<User, 'id'>) {
     const result = await this.findByEmailOrPhone(email, phone);
-    if (result) throw new Error('User already exists');
+    if (result) throw new ExistingUserError();
     console.log('result', result);
 
     const id = await UserServices.saveUser({ name, email, phone, postalCode });

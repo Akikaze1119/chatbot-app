@@ -1,4 +1,5 @@
 import UserServices from '../services/user_services.js';
+import { ExistingUserError } from '../errors/errors.js';
 class User {
     id;
     name;
@@ -15,7 +16,7 @@ class User {
     static async save({ name, email, phone, postalCode }) {
         const result = await this.findByEmailOrPhone(email, phone);
         if (result)
-            throw new Error('User already exists');
+            throw new ExistingUserError();
         console.log('result', result);
         const id = await UserServices.saveUser({ name, email, phone, postalCode });
         const user = new User({ id, name, email, phone, postalCode });
