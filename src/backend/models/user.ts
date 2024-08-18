@@ -1,7 +1,14 @@
+import { IUser } from '../../types/user';
 import UserServices from '../services/user_services.js';
 
 class User {
-  constructor({ id, name, email, phone, postalCode }) {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  postalCode: string;
+
+  constructor({ id, name, email, phone, postalCode }: IUser) {
     this.id = id;
     this.name = name;
     this.email = email;
@@ -9,20 +16,21 @@ class User {
     this.postalCode = postalCode;
   }
 
-  static async save({ name, email, phone, postalCode }) {
+  static async save({ name, email, phone, postalCode }: Omit<User, 'id'>) {
     const result = await this.findByEmailOrPhone(email, phone);
-    if (result.length > 0) throw new Error('User already exists');
+    if (result) throw new Error('User already exists');
+    console.log('result', result);
 
     const id = await UserServices.saveUser({ name, email, phone, postalCode });
     const user = new User({ id, name, email, phone, postalCode });
     return user;
   }
 
-  static async findByEmailOrPhone(email, phone) {
+  static async findByEmailOrPhone(email: string, phone: string) {
     return await UserServices.getUserByEmailOrPhone(email, phone);
   }
 
-  static async findById(id) {
+  static async findById(id: number) {
     return await UserServices.getUserById(id);
   }
 }

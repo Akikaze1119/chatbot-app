@@ -21,6 +21,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+console.log('hi');
 app.use('/api/users', router_users);
 
 const googleGenAIKey = process.env.GOOGLE_GEN_AI_KEY || 'default-key';
