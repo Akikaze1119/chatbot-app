@@ -6,7 +6,7 @@ import ws from 'ws';
 import express from 'express';
 import cors from 'cors';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import router_chats from './routers/router_chats.js';
+import router from './routers/router.js';
 
 dotenv.config();
 neonConfig.webSocketConstructor = ws;
@@ -21,8 +21,8 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-console.log('hi');
-app.use('/api/chats', router_chats);
+
+app.use('/api', router);
 
 const googleGenAIKey = process.env.GOOGLE_GEN_AI_KEY || 'default-key';
 const getAI = new GoogleGenerativeAI(googleGenAIKey);

@@ -2,6 +2,7 @@ import { IChat } from '../../types/chat';
 import { neon } from '@neondatabase/serverless';
 
 class ChatServices {
+  // TODO: move SQL to scope class
   static async saveChat({ userId, score, location, time_stamp }: Omit<IChat, 'id'>) {
     const sql = neon(`${process.env.DATABASE_URL}`);
     const response = await sql`

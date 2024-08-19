@@ -1,6 +1,7 @@
 import User from '../models/user.js';
 import { neon } from '@neondatabase/serverless';
 class UserServices {
+    // TODO: move SQL to scope class
     static async saveUser({ name, email, phone, postalCode }) {
         const sql = neon(`${process.env.DATABASE_URL}`);
         const response = await sql `
