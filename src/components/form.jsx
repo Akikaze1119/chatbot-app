@@ -19,7 +19,7 @@ export default function UserForm({ getResponse, onShowForm }) {
 
   const createUser = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/users', {
+      const response = await fetch('http://localhost:8000/api/chats', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
