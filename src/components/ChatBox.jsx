@@ -13,32 +13,35 @@ export default function ChatBox() {
       setError('ERROR! Please press clear button and ask a question');
       return;
     }
+    const chatId = localStorage.getItem('chatId');
+    const chatIdNumber = parseInt(chatId);
     try {
-      const options = {
+      const response = await fetch('http://localhost:8000/api/messages', {
         method: 'POST',
-        body: JSON.stringify({
-          history: history,
-          message: userText,
-        }),
         headers: {
           'Content-Type': 'application/json',
         },
-      };
-      const response = await fetch('http://localhost:8000/gemini', options);
+        body: JSON.stringify({
+          chatId: chatIdNumber,
+          history: history,
+          content: userText,
+        }),
+      });
+
       const data = await response.text();
       console.log('Gemini res data:', data);
-      setChatHistory((oldChatHistory) => [
-        ...oldChatHistory,
-        {
-          role: 'user',
-          parts: [{ text: userText }],
-        },
-        {
-          role: 'model',
-          parts: [{ text: data }],
-        },
-      ]);
-      setValue('');
+      // setChatHistory((oldChatHistory) => [
+      //   ...oldChatHistory,
+      //   {
+      //     role: 'user',
+      //     parts: [{ text: userText }],
+      //   },
+      //   {
+      //     role: 'model',
+      //     parts: [{ text: data }],
+      //   },
+      // ]);
+      // setValue('');
     } catch (error) {
       console.error(error);
       setError('Something went wrong! Please try again later');

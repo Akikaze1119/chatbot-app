@@ -17,7 +17,10 @@ export default function UserForm({ getResponse, onShowForm }) {
     }));
   };
 
-  const createUser = async () => {
+  /**
+   * send user info to the server to start the chat
+   */
+  const startChat = async () => {
     try {
       const response = await fetch('http://localhost:8000/api/chats', {
         method: 'POST',
@@ -27,7 +30,6 @@ export default function UserForm({ getResponse, onShowForm }) {
         body: JSON.stringify(userInfo),
       });
       const data = await response.json();
-      console.log(data);
       if (response.status !== 200) throw new Error(data);
       return data;
     } catch (error) {
@@ -35,15 +37,26 @@ export default function UserForm({ getResponse, onShowForm }) {
     }
   };
 
+  /**
+   * handle user info form submission
+   */
   const handleSubmitUserInfo = async (e) => {
     e.preventDefault();
     try {
-      const result = await createUser();
+      // 1. start the chat with the user info
+      const result = await startChat();
       if (result.error) {
         setError(result.error);
       } else {
+        // 2.save chatId to localStorage
+        result.chat.id && localStorage.setItem('chatId', result.chat.id);
+
+        // 3.set user info in the chat for the model to use
         let prompt = `I'm sending my info. Talk based on my info. When I ask you about location, you have to answer based on my postal code. User info: ${userInfo.name}, ${userInfo.email}, ${userInfo.phone}, ${userInfo.postalCode}`;
-        getResponse(prompt, []);
+
+        // 4.get the response from the model based on the prompt and send it to the server
+        await getResponse(prompt, []);
+
         setError(null);
         setUserInfo(null);
         onShowForm(false);
