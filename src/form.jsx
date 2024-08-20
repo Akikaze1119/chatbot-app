@@ -1,12 +1,11 @@
 import { useState } from 'react';
 
 export default function UserForm({ getResponse, onShowForm }) {
-  const [error, setError] = useState(null);
   const [userInfo, setUserInfo] = useState({
     name: 'Jane Doe',
     email: 'test@test.com',
     phone: '1234567890',
-    postalCode: 'V1V1V1',
+    postcode: 'V1V 1V1',
   });
 
   const handleUserInfoChange = (e) => {
@@ -17,41 +16,11 @@ export default function UserForm({ getResponse, onShowForm }) {
     }));
   };
 
-  const createUser = async () => {
-    try {
-      const response = await fetch('http://localhost:8000/api/chats', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userInfo),
-      });
-      const data = await response.json();
-      console.log(data);
-      if (response.status !== 200) throw new Error(data);
-      return data;
-    } catch (error) {
-      return { error: error.message };
-    }
-  };
-
-  const handleSubmitUserInfo = async (e) => {
+  const handleSubmitUserInfo = (e) => {
     e.preventDefault();
-    try {
-      const result = await createUser();
-      if (result.error) {
-        setError(result.error);
-      } else {
-        let prompt = `I'm sending my info. Talk based on my info. When I ask you about location, you have to answer based on my postal code. User info: ${userInfo.name}, ${userInfo.email}, ${userInfo.phone}, ${userInfo.postalCode}`;
-        getResponse(prompt, []);
-        setError(null);
-        setUserInfo(null);
-        onShowForm(false);
-      }
-    } catch (error) {
-      console.error(error);
-      setError('Something went wrong! Please try again later');
-    }
+    let prompt = `I'm sending my info. Talk based on my info. When I ask you about location, you have to answer based on my postal code. User info: ${userInfo.name}, ${userInfo.email}, ${userInfo.phone}, ${userInfo.postcode}`;
+    getResponse(prompt, []);
+    onShowForm(false);
   };
 
   return (
@@ -87,16 +56,15 @@ export default function UserForm({ getResponse, onShowForm }) {
         />
       </div>
       <div>
-        <label>Postal code: </label>
+        <label>Postcode: </label>
         <input
           type='text'
-          name='postalCode'
-          value={userInfo.postalCode}
+          name='postcode'
+          value={userInfo.postcode}
           onChange={handleUserInfoChange}
           required
         />
       </div>
-      {error && <p className='text-red-600'>{error}</p>}
       <button type='submit'>Submit</button>
     </form>
   );

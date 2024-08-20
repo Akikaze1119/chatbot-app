@@ -1,97 +1,28 @@
 import { useState } from 'react';
-import UserForm from './components/Form.jsx';
-import { formatText } from './utils/formatText.js';
+
+import ChatBox from './components/ChatBox.jsx';
+import ChatButton from './components/ChatButton.jsx';
 
 function App() {
-  const [value, setValue] = useState('');
-  const [error, setError] = useState('');
-  const [chatHistory, setChatHistory] = useState([]);
-  const [showForm, setShowForm] = useState(true);
-
-  const getResponse = async (userText, history) => {
-    if (!userText) {
-      setError('ERROR! Please press clear button and ask a question');
-      return;
-    }
-    try {
-      const options = {
-        method: 'POST',
-        body: JSON.stringify({
-          history: history,
-          message: userText,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
-      const response = await fetch('http://localhost:8000/gemini', options);
-      const data = await response.text();
-      console.log('Gemini res data:', data);
-      setChatHistory((oldChatHistory) => [
-        ...oldChatHistory,
-        {
-          role: 'user',
-          parts: [{ text: userText }],
-        },
-        {
-          role: 'model',
-          parts: [{ text: data }],
-        },
-      ]);
-      setValue('');
-    } catch (error) {
-      console.error(error);
-      setError('Something went wrong! Please try again later');
-    }
-  };
-
-  const clear = () => {
-    setValue('');
-    setError('');
-    setChatHistory([]);
-  };
-
+  const [open, setOpen] = useState(false);
   return (
-    <div className='w-full'>
-      <section className='m-4 max-w-4xl'>
-        {showForm && <UserForm getResponse={getResponse} onShowForm={setShowForm} />}
-        {!showForm && (
-          <div>
-            <h2 className='text-xl'>What do you want to know?</h2>
-            <div className='input-container'>
-              <input
-                className='w-1/2 border-2 border-gray-300 p-2 rounded-lg mr-2'
-                value={value}
-                placeholder='Ask me anything...'
-                onChange={(e) => setValue(e.target.value)}
-              />
-              {!error && (
-                <button
-                  onClick={() => getResponse(value, chatHistory)}
-                  disabled={chatHistory.length < 2 && true}
-                >
-                  Ask me
-                </button>
-              )}
-              {error && <button onClick={clear}>Clear</button>}
-            </div>
-            {error && <p>error {error}</p>}
-            <div className='mt-4'>
-              {chatHistory.slice(2).map((chatItem, _index) => (
-                <div className='mb-4' key={_index + 2}>
-                  <p>{chatItem.role} :</p>
-                  {chatItem.role === 'model' && (
-                    <p className='bg-violet-100 p-4'>{formatText(chatItem.parts[0].text)}</p>
-                  )}
-                  {chatItem.role === 'user' && (
-                    <p className='bg-sky-100 p-4'>{formatText(chatItem.parts[0].text)}</p>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </section>
+    <div className={'flex justify-center items-start min-h-dvh bg-indigo-200'}>
+      <div className={'max-w-screen-sm min-h-dvh w-full h-full bg-white relative'}>
+        <header className={'bg-indigo-600 p-4 flex justify-center'}>
+          <h1 className='text-white font-bold'>React Chat</h1>
+        </header>
+        <main className={'p-6'}>
+          <h2>Contents</h2>
+          <p>
+            This is a chat application that uses a chatbot to answer questions. Click on the chat
+            button to open the chat window.
+          </p>
+          <aside>
+            <ChatButton open={open} setOpen={setOpen} />
+            {open && <ChatBox />}
+          </aside>
+        </main>
+      </div>
     </div>
   );
 }
