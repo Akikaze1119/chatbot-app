@@ -29,10 +29,6 @@ class User {
   static async findByEmailOrPhone(email: string, phone: string) {
     return await UserServices.getUserByEmailOrPhone(email, phone);
   }
-
-  static async findById(id: number) {
-    return await UserServices.getUserById(id);
-  }
 }
 
 export default User;

@@ -27,16 +27,6 @@ class UserServices {
     const user = new User(users[0] as IUser);
     return user;
   }
-
-  static async getUserById(id: number): Promise<IUser | null> {
-    const sql = neon(`${process.env.DATABASE_URL}`);
-    const user = await sql`
-    SELECT * FROM users WHERE id = ${id};
-    `;
-
-    console.log('user getUserById:', user);
-    return user.length > 0 ? (user[0] as IUser) : null;
-  }
 }
 
 export default UserServices;
