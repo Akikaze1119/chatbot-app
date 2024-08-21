@@ -28,20 +28,19 @@ export default function ChatBox() {
         }),
       });
 
-      const data = await response.text();
-      console.log('Gemini res data:', data);
-      // setChatHistory((oldChatHistory) => [
-      //   ...oldChatHistory,
-      //   {
-      //     role: 'user',
-      //     parts: [{ text: userText }],
-      //   },
-      //   {
-      //     role: 'model',
-      //     parts: [{ text: data }],
-      //   },
-      // ]);
-      // setValue('');
+      const data = await response.json();
+      setChatHistory((oldChatHistory) => [
+        ...oldChatHistory,
+        {
+          role: 'user',
+          parts: [{ text: data.message.content }],
+        },
+        {
+          role: 'model',
+          parts: [{ text: data.aiMessage.content }],
+        },
+      ]);
+      setValue('');
     } catch (error) {
       console.error(error);
       setError('Something went wrong! Please try again later');
