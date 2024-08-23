@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import UserForm from './UserForm.jsx';
-import Chat from './Chat.jsx';
+import ChatRoom from './ChatRoom.jsx';
 
 export default function ChatBox() {
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
   const [chatHistory, setChatHistory] = useState([]);
-  const [showForm, setShowForm] = useState(true);
+  // TODO: change the state to show the form
+  const [showForm, setShowForm] = useState(false);
 
   const getResponse = async (userText, history) => {
     if (!userText) {
