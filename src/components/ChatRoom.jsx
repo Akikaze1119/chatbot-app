@@ -1,6 +1,10 @@
 import { formatText } from '../utils/formatText.js';
 
-export default function Chat({ getResponse, chatHistory, clear, error, value, setValue }) {
+export default function ChatRoom({ getResponse, chatHistory, clear, error, value, setValue }) {
+  const handleRestart = () => {
+    clear();
+  };
+
   return (
     <div>
       <h2 className='text-xl'>What do you want to know?</h2>
@@ -40,6 +44,16 @@ export default function Chat({ getResponse, chatHistory, clear, error, value, se
           </div>
         ))}
       </div>
+      {chatHistory.length > 2 && (
+        <button
+          className='submit-button'
+          onClick={() => {
+            clear();
+          }}
+        >
+          Restart
+        </button>
+      )}
     </div>
   );
 }
