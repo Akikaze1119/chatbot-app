@@ -5,7 +5,6 @@ export default function ChatRoom({}) {
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
   const [chatHistory, setChatHistory] = useState([]);
-  console.log('chatHistory', chatHistory);
 
   const sendMessage = async (userText, history) => {
     if (!userText) {
@@ -57,12 +56,14 @@ export default function ChatRoom({}) {
   const restartChat = async () => {
     try {
       const userId = localStorage.getItem('userId');
-      const response = await fetch('http://localhost:8000/api/chats/restartChat', {
+      const response = await fetch('http://localhost:8000/api/chats/restart', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(userId),
+        body: JSON.stringify({
+          userId: userId,
+        }),
       });
       const data = await response.json();
       if (response.status !== 200) throw new Error(data);
@@ -111,7 +112,7 @@ export default function ChatRoom({}) {
           </button>
         )}
         {error && (
-          <button className={'submit-button'} onClick={clear}>
+          <button className={'submit-button'} onClick={clear} type='button'>
             Clear
           </button>
         )}
@@ -133,9 +134,10 @@ export default function ChatRoom({}) {
       {chatHistory.length > 1 && (
         <button
           className='submit-button'
-          onClick={() => {
-            handleRestart();
+          onClick={(e) => {
+            handleRestart(e);
           }}
+          type='submit'
         >
           Restart
         </button>

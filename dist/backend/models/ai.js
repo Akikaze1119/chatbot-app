@@ -12,16 +12,14 @@ class Ai {
             const getAI = new GoogleGenerativeAI(googleGenAIKey);
             const model = getAI.getGenerativeModel({ model: 'gemini-pro' });
             // if history is empty, add a default message
-            if (history.length === 0) {
-                history.push({
-                    role: 'user',
-                    parts: [
-                        {
-                            text: 'Hello, your name is gemini. You have to help giving some information about summer night movies.',
-                        },
-                    ],
-                });
-            }
+            history.unshift({
+                role: 'user',
+                parts: [
+                    {
+                        text: 'Hello, your name is gemini. You have to help giving some information about summer night movies.',
+                    },
+                ],
+            });
             const chat = model.startChat({
                 history: history,
             });
