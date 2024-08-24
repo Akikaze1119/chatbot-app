@@ -6,4 +6,14 @@ async function startChat(req, res) {
     const chat = await Chat.save({ userId: user.id, score: 0, location: 'Vancouver, Canada' });
     res.json({ user, chat });
 }
-export { startChat };
+async function restartChat(req, res) {
+    const { userId } = req.body;
+    // Validate that the user exists
+    const user = await User.findById(userId);
+    if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+    }
+    const chat = await Chat.save({ userId: user.id, score: 0, location: 'Vancouver, Canada' });
+    res.json({ chat });
+}
+export { startChat, restartChat };

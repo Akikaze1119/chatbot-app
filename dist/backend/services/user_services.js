@@ -1,7 +1,6 @@
 import User from '../models/user.js';
 import { neon } from '@neondatabase/serverless';
 class UserServices {
-    // TODO: move SQL to scope class
     static async saveUser({ name, email, phone, postalCode }) {
         const sql = neon(`${process.env.DATABASE_URL}`);
         const response = await sql `
@@ -26,11 +25,15 @@ class UserServices {
     }
     static async getUserById(id) {
         const sql = neon(`${process.env.DATABASE_URL}`);
-        const user = await sql `
-    SELECT * FROM users WHERE id = ${id};
+        const users = await sql `
+    SELECT id, name, email, phone, postal_code 
+    FROM users 
+    WHERE id = ${id};
     `;
-        console.log('user getUserById:', user);
-        return user.length > 0 ? user[0] : null;
+        if (users.length < 1)
+            return null;
+        const user = new User(users[0]);
+        return user;
     }
 }
 export default UserServices;

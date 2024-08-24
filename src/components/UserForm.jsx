@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function UserForm({ getResponse, onShowForm }) {
+export default function UserForm({ onShowForm }) {
   const [error, setError] = useState(null);
   const [userInfo, setUserInfo] = useState({
     name: 'Jane Doe',
@@ -50,13 +50,9 @@ export default function UserForm({ getResponse, onShowForm }) {
       } else {
         // 2.save chatId to localStorage
         result.chat.id && localStorage.setItem('chatId', result.chat.id);
+        result.user.id && localStorage.setItem('userId', result.user.id);
 
-        // 3.set user info in the chat for the model to use
-        let prompt = `I'm sending my info. Talk based on my info. When I ask you about location, you have to answer based on my postal code. User info: ${userInfo.name}, ${userInfo.email}, ${userInfo.phone}, ${userInfo.postalCode}`;
-
-        // 4.get the response from the model based on the prompt and send it to the server
-        await getResponse(prompt, []);
-
+        // 3. clear the form and show the chat room
         setError(null);
         setUserInfo(null);
         onShowForm(false);

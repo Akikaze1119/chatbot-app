@@ -1,6 +1,5 @@
 import { neon } from '@neondatabase/serverless';
 class MessageServices {
-    // TODO: move SQL to scope class
     static async saveMessage({ chatId, content, sender, time_stamp }) {
         const sql = neon(`${process.env.DATABASE_URL}`);
         const response = await sql `

@@ -2,8 +2,8 @@ import ChatServices from '../services/chat_services.js';
 import { IChat } from '../../types/chat.js';
 
 class Chat {
-  id: number;
-  userId: number;
+  id: string;
+  userId: string;
   score: number;
   location: string;
   time_stamp: Date;

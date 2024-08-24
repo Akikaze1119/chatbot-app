@@ -1,8 +1,97 @@
+import { useState } from 'react';
 import { formatText } from '../utils/formatText.js';
 
-export default function ChatRoom({ getResponse, chatHistory, clear, error, value, setValue }) {
-  const handleRestart = () => {
-    clear();
+export default function ChatRoom({}) {
+  const [value, setValue] = useState('');
+  const [error, setError] = useState('');
+  const [chatHistory, setChatHistory] = useState([]);
+
+  const sendMessage = async (userText, history) => {
+    if (!userText) {
+      setError('ERROR! Please press clear button and ask a question');
+      return;
+    }
+    const chatId = localStorage.getItem('chatId');
+    try {
+      const response = await fetch('http://localhost:8000/api/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          chatId: chatId,
+          history: history,
+          content: userText,
+        }),
+      });
+
+      const data = await response.json();
+      setChatHistory((oldChatHistory) => [
+        ...oldChatHistory,
+        {
+          role: 'user',
+          parts: [{ text: data.message.content }],
+        },
+        {
+          role: 'model',
+          parts: [{ text: data.aiMessage.content }],
+        },
+      ]);
+      setValue('');
+    } catch (error) {
+      console.error(error);
+      setError('Something went wrong! Please try again later');
+    }
+  };
+
+  const clear = () => {
+    setValue('');
+    setError('');
+    setChatHistory([]);
+  };
+
+  /**
+   * restart the chat
+   */
+  const restartChat = async () => {
+    try {
+      const userId = localStorage.getItem('userId');
+      const response = await fetch('http://localhost:8000/api/chats/restartChat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userId),
+      });
+      const data = await response.json();
+      if (response.status !== 200) throw new Error(data);
+      return data;
+    } catch (error) {
+      return { error: error.message };
+    }
+  };
+
+  /**
+   * handle user info form submission
+   */
+  const handleRestart = async (e) => {
+    e.preventDefault();
+    try {
+      // 1. start the chat with the user info
+      const result = await restartChat();
+      if (result.error) {
+        setError(result.error);
+      } else {
+        // 2.delete the chatId from the local storage and set the new chatId
+        localStorage.removeItem('chatId');
+        result.chat.id && localStorage.setItem('chatId', result.chat.id);
+
+        clear();
+      }
+    } catch (error) {
+      console.error(error);
+      setError('Something went wrong! Please try again later');
+    }
   };
 
   return (
@@ -16,11 +105,7 @@ export default function ChatRoom({ getResponse, chatHistory, clear, error, value
           onChange={(e) => setValue(e.target.value)}
         />
         {!error && (
-          <button
-            className={'submit-button'}
-            onClick={() => getResponse(value, chatHistory)}
-            disabled={chatHistory.length < 2 && true}
-          >
+          <button className={'submit-button'} onClick={() => sendMessage(value, chatHistory)}>
             Ask me
           </button>
         )}
@@ -32,8 +117,8 @@ export default function ChatRoom({ getResponse, chatHistory, clear, error, value
       </div>
       {error && <p>error {error}</p>}
       <div className='mt-4'>
-        {chatHistory.slice(2).map((chatItem, _index) => (
-          <div className='mb-4' key={_index + 2}>
+        {chatHistory.map((chatItem, _index) => (
+          <div className='mb-4' key={_index}>
             <p>{chatItem.role} :</p>
             {chatItem.role === 'model' && (
               <p className='bg-violet-100 p-4'>{formatText(chatItem.parts[0].text)}</p>
@@ -44,11 +129,11 @@ export default function ChatRoom({ getResponse, chatHistory, clear, error, value
           </div>
         ))}
       </div>
-      {chatHistory.length > 2 && (
+      {chatHistory.length > 1 && (
         <button
           className='submit-button'
           onClick={() => {
-            clear();
+            handleRestart();
           }}
         >
           Restart

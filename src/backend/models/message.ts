@@ -3,7 +3,7 @@ import { IMessage } from '../../types/message.js';
 
 class Message {
   id: number;
-  chatId: number;
+  chatId: string;
   content: string;
   sender: string;
   time_stamp: Date;

@@ -1,9 +1,8 @@
 import { IUser } from '../../types/user';
 import UserServices from '../services/user_services.js';
-import { ExistingUserError } from '../errors/errors.js';
 
 class User {
-  id: number;
+  id: string;
   name: string;
   email: string;
   phone: string;
@@ -28,6 +27,10 @@ class User {
 
   static async findByEmailOrPhone(email: string, phone: string) {
     return await UserServices.getUserByEmailOrPhone(email, phone);
+  }
+
+  static async findById(id: string) {
+    return await UserServices.getUserById(id);
   }
 }
 
