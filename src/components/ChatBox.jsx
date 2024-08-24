@@ -3,7 +3,6 @@ import UserForm from './UserForm.jsx';
 import ChatRoom from './ChatRoom.jsx';
 
 export default function ChatBox() {
-  // TODO: change the state to show the form
   const [showForm, setShowForm] = useState(true);
 
   return (
