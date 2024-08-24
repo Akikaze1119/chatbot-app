@@ -5,6 +5,7 @@ export default function ChatRoom({}) {
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
   const [chatHistory, setChatHistory] = useState([]);
+  console.log('chatHistory', chatHistory);
 
   const sendMessage = async (userText, history) => {
     if (!userText) {
@@ -118,13 +119,13 @@ export default function ChatRoom({}) {
       {error && <p>error {error}</p>}
       <div className='mt-4'>
         {chatHistory.map((chatItem, _index) => (
-          <div className='mb-4' key={_index}>
+          <div className='mb-4' key={`${chatItem.role}-${_index}`}>
             <p>{chatItem.role} :</p>
             {chatItem.role === 'model' && (
-              <p className='bg-violet-100 p-4'>{formatText(chatItem.parts[0].text)}</p>
+              <div className='bg-violet-100 p-4'>{formatText(chatItem.parts[0].text)}</div>
             )}
             {chatItem.role === 'user' && (
-              <p className='bg-sky-100 p-4'>{formatText(chatItem.parts[0].text)}</p>
+              <div className='bg-sky-100 p-4'>{formatText(chatItem.parts[0].text)}</div>
             )}
           </div>
         ))}
