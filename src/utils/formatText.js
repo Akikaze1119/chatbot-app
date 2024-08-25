@@ -49,6 +49,5 @@ export const formatText = (text) => {
     formattedContent.push(<ul key={formattedContent.length}>{currentList}</ul>);
   }
 
-  console.log('formattedContent:', formattedContent);
   return <div>{formattedContent}</div>;
 };
