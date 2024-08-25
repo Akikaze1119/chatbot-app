@@ -1,16 +1,33 @@
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { formatText } from '../utils/formatText.js';
 
-export default function ChatRoom({}) {
-  const [value, setValue] = useState('');
+export default function ChatRoom() {
   const [error, setError] = useState('');
   const [chatHistory, setChatHistory] = useState([]);
 
-  const sendMessage = async (userText, history) => {
-    if (!userText) {
-      setError('ERROR! Please press clear button and ask a question');
-      return;
-    }
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm({
+    defaultValues: {
+      userText: '',
+    },
+    mode: 'onBlur',
+  });
+
+  const clear = () => {
+    reset();
+    setChatHistory([]);
+  };
+
+  /**
+   * send user input to the server and get the response
+   */
+  const onSubmit = async (data) => {
+    const userText = data.userText;
     const chatId = localStorage.getItem('chatId');
     try {
       const response = await fetch('http://localhost:8000/api/messages', {
@@ -20,7 +37,7 @@ export default function ChatRoom({}) {
         },
         body: JSON.stringify({
           chatId: chatId,
-          history: history,
+          history: chatHistory,
           content: userText,
         }),
       });
@@ -37,17 +54,10 @@ export default function ChatRoom({}) {
           parts: [{ text: data.aiMessage.content }],
         },
       ]);
-      setValue('');
     } catch (error) {
       console.error(error);
       setError('Something went wrong! Please try again later');
     }
-  };
-
-  const clear = () => {
-    setValue('');
-    setError('');
-    setChatHistory([]);
   };
 
   /**
@@ -100,24 +110,32 @@ export default function ChatRoom({}) {
     <div>
       <h2 className='text-xl'>What do you want to know?</h2>
       <div className='input-container'>
-        <input
-          className='w-1/2 border-2 border-gray-300 p-2 rounded-lg mr-2'
-          value={value}
-          placeholder='Ask me anything...'
-          onChange={(e) => setValue(e.target.value)}
-        />
-        {!error && (
-          <button className={'submit-button'} onClick={() => sendMessage(value, chatHistory)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <input
+            className='w-1/2 border-2 border-gray-300 p-2 rounded-lg mr-2'
+            type='text'
+            {...register('userText', { required: 'Enter here.' })}
+            placeholder='Ask me anything...'
+            // disabled={isSubmitting}
+          />
+          <button className={'submit-button'} type={'submit'} disabled={isSubmitting}>
             Ask me
           </button>
-        )}
-        {error && (
-          <button className={'submit-button'} onClick={clear} type='button'>
-            Clear
-          </button>
-        )}
+          {errors && <p>{errors.userText?.message}</p>}
+        </form>
       </div>
-      {error && <p>error {error}</p>}
+      {error && <p>{error}</p>}
+      {chatHistory.length > 1 && (
+        <button
+          className='submit-button'
+          onClick={(e) => {
+            handleRestart(e);
+          }}
+          type='submit'
+        >
+          Restart
+        </button>
+      )}
       <div className='mt-4'>
         {chatHistory.map((chatItem, _index) => (
           <div className='mb-4' key={`${chatItem.role}-${_index}`}>
@@ -131,17 +149,6 @@ export default function ChatRoom({}) {
           </div>
         ))}
       </div>
-      {chatHistory.length > 1 && (
-        <button
-          className='submit-button'
-          onClick={(e) => {
-            handleRestart(e);
-          }}
-          type='submit'
-        >
-          Restart
-        </button>
-      )}
     </div>
   );
 }

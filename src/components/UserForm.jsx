@@ -1,26 +1,33 @@
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 export default function UserForm({ onShowForm }) {
   const [error, setError] = useState(null);
-  const [userInfo, setUserInfo] = useState({
-    name: 'Jane Doe',
-    email: 'test@test.com',
-    phone: '1234567890',
-    postalCode: 'V1V1V1',
-  });
 
-  const handleUserInfoChange = (e) => {
-    const { name, value } = e.target;
-    setUserInfo((prevInfo) => ({
-      ...prevInfo,
-      [name]: value,
-    }));
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    defaultValues: {
+      name: '',
+      email: '',
+      phone: '',
+      postalCode: '',
+    },
+    mode: 'onBlur',
+  });
 
   /**
    * send user info to the server to start the chat
    */
-  const startChat = async () => {
+  const startChat = async (data) => {
+    const userInfo = {
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      postalCode: data.postalCode,
+    };
     try {
       const response = await fetch('http://localhost:8000/api/chats', {
         method: 'POST',
@@ -40,11 +47,10 @@ export default function UserForm({ onShowForm }) {
   /**
    * handle user info form submission
    */
-  const handleSubmitUserInfo = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (data) => {
     try {
       // 1. start the chat with the user info
-      const result = await startChat();
+      const result = await startChat(data);
       if (result.error) {
         setError(result.error);
       } else {
@@ -53,8 +59,6 @@ export default function UserForm({ onShowForm }) {
         result.user.id && localStorage.setItem('userId', result.user.id);
 
         // 3. clear the form and show the chat room
-        setError(null);
-        setUserInfo(null);
         onShowForm(false);
       }
     } catch (error) {
@@ -64,49 +68,55 @@ export default function UserForm({ onShowForm }) {
   };
 
   return (
-    <form onSubmit={handleSubmitUserInfo} className='flex flex-col gap-2'>
+    <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-2'>
       <div>
-        <label>Name: </label>
         <input
           type='text'
-          name='name'
-          value={userInfo.name}
-          onChange={handleUserInfoChange}
-          required
+          {...register('name', { required: 'This is required.' })}
+          placeholder='Full Name'
         />
+        {errors && <p className='text-red-600 text-sm'>{errors.name?.message}</p>}
       </div>
       <div>
-        <label>Email: </label>
         <input
           type='email'
-          name='email'
-          value={userInfo.email}
-          onChange={handleUserInfoChange}
-          required
+          {...register('email', {
+            required: 'This is required.',
+            pattern: {
+              value: /\S+@\S+\.\S+/,
+              message: 'Entered value does not match email format',
+            },
+          })}
+          placeholder='example@example.com'
         />
+        {errors && <p className='text-red-600 text-sm'>{errors.email?.message}</p>}
       </div>
       <div>
-        <label>Phone: </label>
         <input
           type='tel'
-          name='phone'
-          value={userInfo.phone}
-          onChange={handleUserInfoChange}
-          required
+          {...register('phone', {
+            required: 'This is required.',
+            maxLength: { value: 10, message: 'Max length is 10. Enter without "-"' },
+            minLength: { value: 10, message: 'Min length is 10. Enter without "-"' },
+          })}
+          placeholder='Phone Number'
         />
+        {errors && <p className='text-red-600 text-sm'>{errors.phone?.message}</p>}
       </div>
       <div>
-        <label>Postal code: </label>
         <input
           type='text'
-          name='postalCode'
-          value={userInfo.postalCode}
-          onChange={handleUserInfoChange}
-          required
+          {...register('postalCode', {
+            required: 'This is required.',
+            maxLength: { value: 6, message: 'Max length is 6. Enter without "-"' },
+            minLength: { value: 6, message: 'Min length is 6. Enter without "-"' },
+          })}
+          placeholder='Postal Code'
         />
+        {errors && <p className='text-red-600 text-sm'>{errors.postalCode?.message}</p>}
       </div>
-      {error && <p className='text-red-600'>{error}</p>}
-      <button className={'submit-button'} type='submit'>
+      {error && <p className='text-red-600 text-sm'>{error}</p>}
+      <button className={'submit-button'} type='submit' disabled={isSubmitting}>
         Submit
       </button>
     </form>
