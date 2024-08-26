@@ -1,27 +1,25 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { formatText } from '../utils/formatText.js';
+import ScoreForm from './ScoreForm.jsx';
 
 export default function ChatRoom() {
   const [error, setError] = useState('');
   const [chatHistory, setChatHistory] = useState([]);
+  const [showScoreForm, setShowScoreForm] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
-  } = useForm({
+  const formControls = useForm({
     defaultValues: {
       userText: '',
     },
     mode: 'onBlur',
   });
 
-  const clear = () => {
-    reset();
-    setChatHistory([]);
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = formControls;
 
   /**
    * send user input to the server and get the response
@@ -60,52 +58,6 @@ export default function ChatRoom() {
     }
   };
 
-  /**
-   * restart the chat
-   */
-  const restartChat = async () => {
-    try {
-      const userId = localStorage.getItem('userId');
-      const response = await fetch('http://localhost:8000/api/chats/restart', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: userId,
-        }),
-      });
-      const data = await response.json();
-      if (response.status !== 200) throw new Error(data);
-      return data;
-    } catch (error) {
-      return { error: error.message };
-    }
-  };
-
-  /**
-   * handle user info form submission
-   */
-  const handleRestart = async (e) => {
-    e.preventDefault();
-    try {
-      // 1. start the chat with the user info
-      const result = await restartChat();
-      if (result.error) {
-        setError(result.error);
-      } else {
-        // 2.delete the chatId from the local storage and set the new chatId
-        localStorage.removeItem('chatId');
-        result.chat.id && localStorage.setItem('chatId', result.chat.id);
-
-        clear();
-      }
-    } catch (error) {
-      console.error(error);
-      setError('Something went wrong! Please try again later');
-    }
-  };
-
   return (
     <div>
       <h2 className='text-xl'>What do you want to know?</h2>
@@ -116,25 +68,32 @@ export default function ChatRoom() {
             type='text'
             {...register('userText', { required: 'Enter here.' })}
             placeholder='Ask me anything...'
-            // disabled={isSubmitting}
+            disabled={isSubmitting}
           />
           <button className={'submit-button'} type={'submit'} disabled={isSubmitting}>
             Ask me
           </button>
-          {errors && <p>{errors.userText?.message}</p>}
+          {errors && <p className='text-red-600 text-sm'>{errors.userText?.message}</p>}
         </form>
       </div>
       {error && <p>{error}</p>}
-      {chatHistory.length > 1 && (
+      {chatHistory.length > 1 && !showScoreForm && (
         <button
           className='submit-button'
-          onClick={(e) => {
-            handleRestart(e);
+          onClick={() => {
+            setShowScoreForm(true);
           }}
-          type='submit'
+          type='button'
         >
           Restart
         </button>
+      )}
+      {showScoreForm && (
+        <ScoreForm
+          setChatHistory={setChatHistory}
+          setError={setError}
+          formControls={formControls}
+        />
       )}
       <div className='mt-4'>
         {chatHistory.map((chatItem, _index) => (

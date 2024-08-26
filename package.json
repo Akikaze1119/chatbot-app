@@ -4,7 +4,11 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
     "@google/generative-ai": "^0.10.0",
+    "@mui/icons-material": "^5.16.7",
+    "@mui/material": "^5.16.7",
     "@neondatabase/serverless": "^0.9.4",
     "@prisma/adapter-neon": "^5.17.0",
     "@prisma/client": "^5.15.1",
