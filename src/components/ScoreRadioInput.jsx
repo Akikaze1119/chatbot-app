@@ -51,16 +51,18 @@ IconContainer.propTypes = {
 };
 
 export default function RadioGroupRating({ formControls }) {
-  const { register } = formControls;
+  const { setValue } = formControls;
+
+  const handleScoreChange = (_event, newScore) => {
+    setValue('score', newScore);
+  };
 
   return (
     <StyledRating
-      name='highlight-selected-only'
-      {...register('score', { required: 'Select a score.' })}
-      defaultValue={3}
       IconContainerComponent={IconContainer}
-      getLabelText={(value) => customIcons[value].label}
+      getLabelText={(score) => customIcons[score].label}
       highlightSelectedOnly
+      onChange={handleScoreChange}
     />
   );
 }

@@ -11,6 +11,15 @@ class ChatServices {
     `;
     return response[0].id;
   }
+
+  static async updateScore({ id, score }: { id: string; score: number }) {
+    const sql = neon(`${process.env.DATABASE_URL}`);
+    await sql`
+    UPDATE chats
+    SET score = ${score}
+    WHERE id = ${id};
+    `;
+  }
 }
 
 export default ChatServices;

@@ -6,7 +6,7 @@ export default function ScoreForm({ setChatHistory, setError, formControls }) {
 
   const scoreFormControls = useForm({
     defaultValues: {
-      score: 0,
+      score: 3,
     },
     mode: 'onBlur',
   });
@@ -46,9 +46,7 @@ export default function ScoreForm({ setChatHistory, setError, formControls }) {
    * handle user info form submission
    */
   const onSubmit = async (data) => {
-    console.log('data:', data);
     const score = data.score;
-    console.log('score:', score);
     try {
       // 1. start the chat with the user info
       const result = await restartChat(score);
@@ -69,16 +67,11 @@ export default function ScoreForm({ setChatHistory, setError, formControls }) {
   };
 
   return (
-    <div className='flex gap-3'>
+    <form className='flex gap-3' onSubmit={handleSubmit(onSubmit)}>
       <RadioGroupRating formControls={scoreFormControls} />
-      <button
-        className='submit-button'
-        onSubmit={handleSubmit(onSubmit)}
-        type='submit'
-        disabled={isSubmitting}
-      >
+      <button className='submit-button' type='submit' disabled={isSubmitting}>
         Submit
       </button>
-    </div>
+    </form>
   );
 }

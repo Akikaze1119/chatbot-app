@@ -88,7 +88,7 @@ export default function ChatRoom() {
           Restart
         </button>
       )}
-      {showScoreForm && (
+      {chatHistory.length > 1 && showScoreForm && (
         <ScoreForm
           setChatHistory={setChatHistory}
           setError={setError}
