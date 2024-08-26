@@ -2,6 +2,6 @@ export interface IChat {
   id: string;
   userId: string;
   score: number;
-  location: string;
+  location: string | null;
   time_stamp: Date;
 }
