@@ -96,8 +96,8 @@ export default function UserForm({ onShowForm }) {
           type='tel'
           {...register('phone', {
             required: 'This is required.',
-            maxLength: { value: 10, message: 'Max length is 10. Enter without "-"' },
-            minLength: { value: 10, message: 'Min length is 10. Enter without "-"' },
+            maxLength: { value: 10, message: 'Max length is 10. Enter without "-" or space' },
+            minLength: { value: 10, message: 'Min length is 10. Enter without "-" or space' },
           })}
           placeholder='Phone Number'
         />
@@ -108,8 +108,8 @@ export default function UserForm({ onShowForm }) {
           type='text'
           {...register('postalCode', {
             required: 'This is required.',
-            maxLength: { value: 6, message: 'Max length is 6. Enter without "-"' },
-            minLength: { value: 6, message: 'Min length is 6. Enter without "-"' },
+            maxLength: { value: 6, message: 'Max length is 6. Enter without "-" or space' },
+            minLength: { value: 6, message: 'Min length is 6. Enter without "-" or space' },
           })}
           placeholder='Postal Code'
         />
