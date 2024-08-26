@@ -5,7 +5,7 @@ class Chat {
   id: string;
   userId: string;
   score: number;
-  location: string;
+  location: string | null;
   time_stamp: Date;
 
   constructor({ id, userId, score, location, time_stamp }: IChat) {
