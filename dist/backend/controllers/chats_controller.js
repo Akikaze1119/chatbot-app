@@ -9,12 +9,15 @@ async function startChat(req, res) {
     res.json({ user, chat });
 }
 async function restartChat(req, res) {
-    const { userId } = req.body;
+    const { userId, chatId, score } = req.body;
+    // Update the chat score
+    await Chat.updateScore({ id: chatId, score });
     // Validate that the user exists
     const user = await User.findById(userId);
     if (!user) {
         return res.status(404).json({ error: 'User not found' });
     }
+    // create a new chat
     const locationData = await getLocation();
     const chat = await Chat.save({ userId: user.id, score: 0, location: locationData });
     res.json({ chat });

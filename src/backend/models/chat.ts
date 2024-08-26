@@ -22,6 +22,10 @@ class Chat {
     const chat = new Chat({ id, userId, score, location, time_stamp });
     return chat;
   }
+
+  static async updateScore({ id, score }: { id: string; score: number }) {
+    await ChatServices.updateScore({ id, score });
+  }
 }
 
 export default Chat;
