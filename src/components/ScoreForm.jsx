@@ -61,6 +61,7 @@ export default function ScoreForm({ setChatHistory, setError, setShowScoreForm, 
 
         reset();
         setChatHistory([]);
+        setShowScoreForm(false);
       }
     } catch (error) {
       console.error(error);
