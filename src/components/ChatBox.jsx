@@ -27,7 +27,7 @@ export default function ChatBox({ setOpen }) {
           <ChevronDown className={'text-white w-8 h-8'} />
         </button>
       </header>
-      <section className='m-4 max-w-4xl'>
+      <section className='max-w-4xl h-full'>
         {showForm && <UserForm onShowForm={setShowForm} />}
         {!showForm && <ChatRoom />}
       </section>
