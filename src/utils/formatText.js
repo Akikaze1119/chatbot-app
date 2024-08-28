@@ -1,4 +1,5 @@
 import { isValidElement } from 'react';
+
 export const formatText = (text) => {
   const lines = text.split('\n');
 
@@ -18,7 +19,12 @@ export const formatText = (text) => {
     } else if (line.trim() === '') {
       return <br key={`br-${index}`} />;
     } else {
-      return <p key={`p-${index}`}>{line}</p>;
+      // 最後の選択肢として <p> タグを使用しますが、他のブロック要素は含めません。
+      return (
+        <div key={`div-${index}`}>
+          <p>{line}</p>
+        </div>
+      );
     }
   });
 
