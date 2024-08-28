@@ -62,7 +62,8 @@ export default function RadioGroupRating({ formControls }) {
       IconContainerComponent={IconContainer}
       getLabelText={(score) => customIcons[score].label}
       highlightSelectedOnly
-      onChange={handleScoreChange}
+      onClick={handleScoreChange}
+      defaultValue={3}
     />
   );
 }

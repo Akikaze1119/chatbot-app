@@ -10,30 +10,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-input,
-button {
-  font-family: 'Roboto', sans-serif;
-}
-
-input {
-  padding: 0.5rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.25rem;
-}
-
-.submit-button {
-  padding: 0.5rem 1rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.25rem;
-  background-color: #4299e1;
-  color: white;
-  max-width: 10rem;
-}
-
-.submit-button:disabled {
-  background-color: #a0aec0;
-}
-
 li {
   list-style-type: disc;
   margin-left: 2rem;
@@ -41,4 +17,18 @@ li {
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+@media (min-width: 640px) {
+  .chat-box {
+    height: calc(100% - 2rem);
+  }
+}
+
+.chat-room {
+  height: calc(100% - 4rem);
+}
+
+.user-form {
+  height: calc(100% - 6rem);
 }

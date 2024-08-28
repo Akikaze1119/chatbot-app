@@ -1,7 +1,9 @@
-import RadioGroupRating from './ScoreRadioInput.jsx';
 import { useForm } from 'react-hook-form';
+import { Undo2, Send } from 'lucide-react';
+import RadioGroupRating from './ScoreRadioInput.jsx';
+import { cn } from '../utils/clsx-utils';
 
-export default function ScoreForm({ setChatHistory, setError, formControls }) {
+export default function ScoreForm({ setChatHistory, setError, setShowScoreForm, formControls }) {
   const { reset } = formControls;
 
   const scoreFormControls = useForm({
@@ -67,11 +69,35 @@ export default function ScoreForm({ setChatHistory, setError, formControls }) {
   };
 
   return (
-    <form className='flex gap-3' onSubmit={handleSubmit(onSubmit)}>
-      <RadioGroupRating formControls={scoreFormControls} />
-      <button className='submit-button' type='submit' disabled={isSubmitting}>
-        Submit
-      </button>
-    </form>
+    <div className={'px-4'}>
+      <p className={'font-semibold pt-2'}>How would you rate the support?</p>
+      <form className={'flex justify-between items-center h-16'} onSubmit={handleSubmit(onSubmit)}>
+        <div className={'flex items-center gap-3'}>
+          <RadioGroupRating formControls={scoreFormControls} />
+          <button
+            className={cn(
+              'bg-violet-700 text-white w-full py-1 px-2 rounded-lg mr-2 flex justify-between items-center',
+              {
+                'opacity-50 cursor-not-allowed': isSubmitting,
+              }
+            )}
+            type='submit'
+            disabled={isSubmitting}
+          >
+            <span className='block w-full'>Send</span>
+            <Send />
+          </button>
+        </div>
+        <button
+          className={'p-1 bg-slate-500 text-white rounded-lg h-fit'}
+          type='button'
+          onClick={() => {
+            setShowScoreForm(false);
+          }}
+        >
+          <Undo2 />
+        </button>
+      </form>
+    </div>
   );
 }
