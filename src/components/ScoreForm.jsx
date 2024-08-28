@@ -3,6 +3,8 @@ import { Undo2, Send } from 'lucide-react';
 import RadioGroupRating from './ScoreRadioInput.jsx';
 import { cn } from '../utils/clsx-utils';
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 export default function ScoreForm({ setChatHistory, setError, setShowScoreForm, formControls }) {
   const { reset } = formControls;
 
@@ -25,7 +27,7 @@ export default function ScoreForm({ setChatHistory, setError, setShowScoreForm, 
     try {
       const userId = localStorage.getItem('userId');
       const chatId = localStorage.getItem('chatId');
-      const response = await fetch('http://localhost:8000/api/chats/restart', {
+      const response = await fetch(`${apiUrl}/api/chats/restart`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -61,6 +63,7 @@ export default function ScoreForm({ setChatHistory, setError, setShowScoreForm, 
 
         reset();
         setChatHistory([]);
+        setShowScoreForm(false);
       }
     } catch (error) {
       console.error(error);
