@@ -42,3 +42,8 @@ li {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
+@media (min-width: 640px) {
+  .chat-box {
+    height: calc(100% - 2rem);
+  }
+}
