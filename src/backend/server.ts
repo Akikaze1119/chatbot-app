@@ -8,7 +8,7 @@ import router from './routers/router.js';
 dotenv.config();
 neonConfig.webSocketConstructor = ws;
 
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 const app = express();
 
 app.use(cors());
