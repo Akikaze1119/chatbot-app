@@ -70,7 +70,7 @@ export default function ChatRoom() {
 
   return (
     <div className='chat-room flex flex-col flex-1 justify-between'>
-      <div className={'overflow-y-scroll mx-2 '}>
+      <div className={'overflow-y-auto mx-2 '}>
         {/* default chatbot message */}
         <AiMessage content={'Hello! How can i assist you today?'} />
         {error && <AiMessage content={error} />}
