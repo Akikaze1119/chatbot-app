@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Send, RotateCcw, Watch } from 'lucide-react';
+import { Send, RotateCcw } from 'lucide-react';
 
 import { formatText } from '../utils/formatText.js';
 import { cn } from '../utils/clsx-utils';
@@ -8,6 +8,8 @@ import ScoreForm from './ScoreForm.jsx';
 import AiMessage from './AiMessage.jsx';
 import UserMessage from './UserMessage.jsx';
 import ChatLoading from './ChatLoading.jsx';
+
+const apiUrl = process.env.REACT_APP_API_URL;
 
 export default function ChatRoom() {
   const [error, setError] = useState('');
@@ -35,7 +37,7 @@ export default function ChatRoom() {
     const userText = data.userText;
     const chatId = localStorage.getItem('chatId');
     try {
-      const response = await fetch('http://localhost:8000/api/messages', {
+      const response = await fetch(`${apiUrl}/api/messages`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -4,6 +4,8 @@ import { Send } from 'lucide-react';
 import AiMessage from './AiMessage.jsx';
 import { cn } from '../utils/clsx-utils';
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 export default function UserForm({ onShowForm }) {
   const [error, setError] = useState(null);
 
@@ -32,7 +34,7 @@ export default function UserForm({ onShowForm }) {
       postalCode: data.postalCode,
     };
     try {
-      const response = await fetch('http://localhost:8000/api/chats', {
+      const response = await fetch(`${apiUrl}/api/chats`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
