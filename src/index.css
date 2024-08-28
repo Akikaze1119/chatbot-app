@@ -28,3 +28,7 @@ code {
 .chat-room {
   height: calc(100% - 4rem);
 }
+
+.user-form {
+  height: calc(100% - 6rem);
+}

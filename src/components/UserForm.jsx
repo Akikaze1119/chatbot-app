@@ -71,16 +71,17 @@ export default function UserForm({ onShowForm }) {
   };
 
   return (
-    <div className='h-full flex flex-col overflow-y-auto'>
+    <div className='chat-room overflow-y-auto mx-4'>
       <AiMessage content={'Tell me about yourself'} />
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className='flex flex-col justify-between flex-1 h-full gap-8'
+        className='user-form flex flex-col justify-between gap-8 mx-2'
       >
         <div className='flex flex-col gap-2 flex-1'>
           <div className='flex flex-col gap-2'>
             <label className='font-semibold'>Name</label>
             <input
+              className={'p-2 border border-gray-300 rounded-md'}
               type='text'
               {...register('name', { required: 'This is required.' })}
               placeholder='Full Name'
@@ -90,6 +91,7 @@ export default function UserForm({ onShowForm }) {
           <div className='flex flex-col gap-2'>
             <label className='font-semibold'>Email</label>
             <input
+              className={'p-2 border border-gray-300 rounded-md'}
               type='email'
               {...register('email', {
                 required: 'This is required.',
@@ -112,7 +114,7 @@ export default function UserForm({ onShowForm }) {
                 minLength: { value: 10, message: 'Min length is 10. Enter without "-" or space' },
               })}
               placeholder='0000000000'
-              className='w-1/3 min-w-32'
+              className='w-1/3 min-w-32 p-2 border border-gray-300 rounded-md'
             />
             {errors && <p className='text-red-600 text-sm'>{errors.phone?.message}</p>}
           </div>
@@ -126,7 +128,7 @@ export default function UserForm({ onShowForm }) {
                 minLength: { value: 6, message: 'Min length is 6. Enter without "-" or space' },
               })}
               placeholder='ABC123'
-              className='w-1/3 min-w-32'
+              className='w-1/3 min-w-32 p-2 border border-gray-300 rounded-md'
             />
             {errors && <p className='text-red-600 text-sm'>{errors.postalCode?.message}</p>}
           </div>
@@ -134,7 +136,7 @@ export default function UserForm({ onShowForm }) {
         </div>
         <button
           className={cn(
-            'bg-violet-700 py-3 px-4 w-5/6 max-w-80 text-white font-semibold rounded-lg flex justify-between absolute bottom-4 left-1/2 transform -translate-x-1/2 ',
+            'bg-violet-700 py-3 px-4 w-5/6 max-w-80 text-white font-semibold rounded-lg flex justify-between items-center mx-auto',
             {
               'opacity-50 cursor-not-allowed': isSubmitting,
             }
